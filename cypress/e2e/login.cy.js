@@ -6,8 +6,10 @@ describe('Login', () => {
 
   it('Login with valid data should allow access to the system', () => {
     //Act
-    cy.get('#username').click().type('julio.lima')
-    cy.get('#senha').click().type('123456')
+    cy.fixture('credentials').then((credentials) => {
+      cy.get('#username').click().type(credentials.valid.username)
+      cy.get('#senha').click().type(credentials.valid.password)
+    })
     cy.contains('button', 'Entrar').click()
 
     //Assert
@@ -16,8 +18,10 @@ describe('Login', () => {
 
   it('Login with invalid data should display an error message', () => {
     //Act
-    cy.get('#username').click().type('julio.lima')
-    cy.get('#senha').click().type('errortest')
+    cy.fixture('credentials').then((credentials) => {
+      cy.get('#username').click().type(credentials.invalid.username)
+      cy.get('#senha').click().type(credentials.invalid.password)
+    })
     cy.contains('button', 'Entrar').click()
 
     //Assert
