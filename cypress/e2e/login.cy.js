@@ -6,11 +6,7 @@ describe('Login', () => {
 
   it('Login with valid data should allow access to the system', () => {
     //Act
-    cy.fixture('credentials').then((credentials) => {
-      cy.get('#username').click().type(credentials.valid.username)
-      cy.get('#senha').click().type(credentials.valid.password)
-    })
-    cy.contains('button', 'Entrar').click()
+    cy.loginWithValidCredentials()
 
     //Assert
     cy.contains('h4', 'Realizar Transferência').should('be.visible')
@@ -18,13 +14,9 @@ describe('Login', () => {
 
   it('Login with invalid data should display an error message', () => {
     //Act
-    cy.fixture('credentials').then((credentials) => {
-      cy.get('#username').click().type(credentials.invalid.username)
-      cy.get('#senha').click().type(credentials.invalid.password)
-    })
-    cy.contains('button', 'Entrar').click()
+    cy.loginWithInvalidCredentials()
 
     //Assert
-    cy.get('.toast').should('have.text', 'Erro no login. Tente novamente.')
+    cy.verifyToastMessage('Erro no login. Tente novamente.')
   })
 })
