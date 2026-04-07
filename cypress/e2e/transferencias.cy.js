@@ -1,26 +1,22 @@
 describe('Transfers', () => {
   beforeEach(() => {
     cy.visit('/')
-    cy.fixture('credentials').then((credentials) => {
-      cy.get('#username').click().type(credentials.valid.username)
-      cy.get('#senha').click().type(credentials.valid.password)
-    })
-    cy.contains('button', 'Entrar').click()
+    cy.loginWithValidCredentials()
   })
 
   it('Should transfer when submitting valid data and values', () => {
-    cy.get('label[for="conta-origem"]').parent().as('origin-account-field')
-    cy.get('@origin-account-field').click()
-    cy.get('@origin-account-field').contains('João da Silva').click()
+    //Act
+    cy.transferValue('João da Silva', 'Maria Oliveira', '12')
 
-    cy.get('label[for="conta-destino"]').parent().as('destination-account-field')
-    cy.get('@destination-account-field').click()
-    cy.get('@destination-account-field').contains('Maria Oliveira').click()
+    //Assert
+    cy.verifyToastMessage('Transferência realizada!')
+  }),
 
-    cy.get('#valor').click().type('12')
+  it('Should show an error message when trying to transfer values above 5000 without token', () => {
+    //Act
+    cy.transferValue('João da Silva', 'Maria Oliveira', '5000.01')
 
-    cy.contains('button', 'Transferir').click()
-
-    cy.get('.toast').should('have.text', 'Transferência realizada!')
+    //Assert
+    cy.verifyToastMessage('Autenticação necessária para transferências acima de R$5.000,00.')
   })
 })
